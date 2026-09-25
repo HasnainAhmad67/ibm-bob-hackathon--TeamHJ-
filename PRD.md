@@ -1,68 +1,145 @@
-Incident Commander — PRD
-Product Requirements Document  ·  IBM Bob 2.0 Hackathon  ·  Sept 25–27, 2026  ·  v1.0 
+# Incident Commander — PRD
 
-1.Overview
-Incident Commander is an AI teammate that watches a production incident unfold, finds the root cause across logs, code, and history in parallel using Bob 2.0, and produces a draft postmortem before the on-call engineer finishes investigating manually. It targets two workflows named directly in the hackathon brief: debugging and application maintenance.
-2.Problem Statement
-When a production system breaks, the first 30–60 minutes are chaotic: engineers dig through scattered logs, guess which recent deploy is responsible, and interrupt each other in a war-room chat. The fix itself is often small — the expensive part is finding what broke and why. Afterward, someone still has to write a postmortem that nobody has energy left for, so lessons get lost and the same class of bug can recur.
-3. Goals
-Speed: Target to complete the simulated incident investigation workflow in under 5 minutes.
-Correctness: Identify the actual root-cause commit for at least 2 out of 3 seeded bugs.
-Reliability: Successfully run the complete workflow end-to-end 3 consecutive times.
-Explainability: Every root-cause finding should reference relevant logs, files, or Git commits.
-Demo Impact: The core value of Incident Commander should be understandable within 20 seconds.
-Target User
-The on-call engineer or small dev team at the moment production breaks — someone who needs a fast, trustworthy first read on "what changed and why did it break," plus a fix they can review rather than blindly trust.
-4.Scope
-In scope for the 3-day MVP:
-●One sample/seeded repo with a real git history and 2–3 intentionally injected bugs at known past commits.Error ingestion: accept a stack trace / failing test / error log as the trigger.
-●Three subagents: Log Analyst, Code Historian, and Fix Writer. Log Analyst and Code Historian run in parallel via Bob 2.0 agent mode; their combined findings are then passed to Fix Writer.
-●Document understanding over a small set of sample runbooks/READMEs so report tone matches a real team.
-●Automatic validation: proposed fix is run against the existing test suite before being shown to a human.
-●Auto-generated postmortem (timeline, cause, impact, prevention suggestion).
-●A live dashboard showing the incident timeline and agents working in parallel.
-Out of scope for the 3-day MVP:
-●Real production monitoring integration (PagerDuty, Datadog, etc.) — the demo uses a simulated/injected incident instead.
-●Multi-repo or microservice-spanning root-cause analysis.
-●Auto-deploying the fix — a human always makes the final call, by design.
-●Support for languages/stacks beyond the one sample repo chosen for the demo.
-4.Functional Requirements
-Module	Requirement	Bob 2.0 feature used
-Error Ingestion	Accept a stack trace, failing test output, or error log as input and normalize it into a single incident record.	—
-Log Analyst
-(subagent)	Parse the stack trace and any available metrics; identify the failing function/module and the symptom pattern.	Subagents, Agent mode
-Code Historian
-(subagent)	Walk git blame/log on the implicated files; identify the most likely suspect commit(s) and explain the causal change in plain language.	Subagents, full repo context
-Fix Writer (subagent)	Propose a concrete patch for the identified cause; must be tested against the existing suite before surfacing to a human.	Subagents, Agent mode
-Orchestration:	Run Log Analyst and Code Historian concurrently (not sequentially); pass their combined output to Fix Writer.	Parallel tasks
-Document
-Understanding	Ingest sample runbooks/past postmortems so the generated report matches the team's real tone and format, not a generic template.	Document understanding
-Fix Validation	Automatically run the proposed patch against the existing test suite; report pass/fail before it reaches the dashboard.	—
-Postmortem
-Generator	Produce a draft postmortem: timeline, root cause, impact, and one prevention suggestion, in the team's own format.	Document understanding, Agent mode
-Dashboard	Live "war room" view: incident feed, real-time agent status (visibly running in parallel), root-cause report, fix status, postmortem.	Visualizes all of the above
+**Product Requirements Document · IBM Bob 2.0 Hackathon · Sept 25–27, 2026 · v1.0 (3-day MVP)**
 
-Non-Functional Requirements
-●Explainability: every claim in the root-cause report must point to a specific commit, file, or log line — no unexplained assertions.
-●Human-in-the-loop: the fix is always shown as a suggestion for review, never auto-applied or auto-deployed.
-●Demo reliability: the pipeline must be re-run at least 3 times successfully before the live/recorded demo to rule out a one-time fluke.
-●Latency: end-to-end run should complete within a few minutes to keep a live demo watchable.
-5.System Flow
-Bug report / failing test / error log  →  Incident record created  →  Log Analyst + Code Historian run in parallel  →  combined findings passed to Fix Writer  →  proposed patch tested against existing suite  →  root-cause report + fix status + postmortem rendered on the dashboard  →  human reviews and decides.
-6.Demo Scenario & Acceptance Criteria
-●A sample repo with real git history has 2–3 bugs deliberately planted at specific past commits.
-●Triggering one bug live must produce, within the demo window: a correct suspect commit, a plain-language explanation, a tested patch, and a draft postmortem. ● The dashboard must visibly show the three subagents running at the same time, not one after another — this is the core "parallel tasks" proof point for judges.
-●A single closing metric (e.g. " Target: complete the simulated incident investigation workflow in under 5 minutes.") must be stated on screen or in narration.
-7.Risks & Mitigations
-Risk	Mitigation
-Subagents give inconsistent or wrong root-cause answers on demo day.	Test against 2–3 seeded bugs repeatedly before the demo; pick the most reliable one for the live run and keep others as backup.
-Parallel orchestration is technically hard to get working in Bob 2.0 within the time limit.	Build Log Analyst first end-to-end (sequential), prove it works, then add Code Historian in parallel — never block the whole pipeline on parallelism working on day 1.
-Live demo fails on stage (network, flaky run).	Always have a pre-recorded backup run of the exact same scenario ready to play.
-Scope creep (trying to support many languages/repos).	Lock a single sample repo and stack on Day 1 evening and do not revisit that decision.
-8.Judging Criteria Alignment
-Criterion	How Incident Commander scores
-Application of Technology	Uses agent mode, subagents, parallel tasks, and document understanding for distinct, necessary reasons — not as checkbox features.
-Business Value	Downtime cost and engineer time are easy to quantify; the postmortem-time metric is concrete and judge-friendly.
-Presentation	A live, simulated incident is a naturally dramatic demo that needs little narration to land.
-Originality	Closes the loop from detection → cause → fix → documentation, instead of stopping at code suggestions like most AI dev tools.
+---
 
+## 1. Overview
+
+Incident Commander is an AI teammate that watches a production incident unfold, finds root cause across logs, code, and history in parallel using Bob 2.0, and produces a draft postmortem before the on-call engineer finishes investigating manually.
+
+Targets hackathon workflows:
+
+* Debugging
+* Application maintenance
+
+---
+
+## 2. Problem Statement
+
+Production failures cause chaotic 30–60 min investigation across logs, recent deploys, war-room chat.
+
+Fix often small; expensive part is finding what broke/why.
+
+Postmortems often skipped due to fatigue, lessons lost, recurrence.
+
+---
+
+## 3. Goals
+
+* **Speed:** simulated incident workflow under 5 minutes.
+* **Correctness:** identify actual root-cause commit for at least 2 of 3 seeded bugs.
+* **Reliability:** complete workflow end-to-end 3 consecutive times.
+* **Explainability:** every root-cause finding references relevant logs/files/Git commits.
+* **Demo impact:** core value understandable within 20 seconds.
+
+### Target User
+
+On-call engineer or small dev team at production break, needs fast, trustworthy first read on “what changed and why did it break,” plus reviewable fix rather than blind trust.
+
+---
+
+# 4. Scope
+
+## In Scope
+
+* One sample/seeded repo with real Git history and 2–3 intentionally injected bugs at known past commits.
+* Error ingestion: stack trace / failing test / error log trigger.
+* Three subagents: Log Analyst, Code Historian, Fix Writer. Log Analyst + Code Historian parallel via Bob 2.0 agent mode; combined findings to Fix Writer.
+* Document understanding over sample runbooks/READMEs to match team tone.
+* Automatic validation: proposed fix run against existing test suite before shown to human.
+* Auto-generated postmortem: timeline, cause, impact, prevention suggestion.
+* Live dashboard showing incident timeline and agents working in parallel.
+
+## Out of Scope
+
+* Real production monitoring integrations (PagerDuty, Datadog); simulated/injected incident.
+* Multi-repo/microservice RCA.
+* Auto-deploy; human final call.
+* Other languages/stacks beyond one sample repo.
+
+---
+
+# 5. Functional Requirements
+
+## Modules
+
+| Module                      | Requirement                                                                                                               | Bob 2.0 Feature                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| **Error Ingestion**         | accepts stack trace/failing test/error log, normalizes to single incident record.                                         |                                    |
+| **Log Analyst subagent**    | parse stack trace/metrics, identify failing function/module and symptom pattern.                                          | Subagents, Agent mode              |
+| **Code Historian subagent** | git blame/log on implicated files; identify likely suspect commits and explain causal change.                             | Subagents, full repo context       |
+| **Fix Writer subagent**     | concrete patch for cause, tested against existing suite before surfacing to human.                                        | Subagents, Agent mode              |
+| **Orchestration**           | Log Analyst + Code Historian concurrently, combined output to Fix Writer.                                                 | Parallel tasks                     |
+| **Document Understanding**  | sample runbooks/past postmortems so generated report matches team tone/format.                                            | Document understanding             |
+| **Fix Validation**          | automatically run proposed patch against existing test suite; report pass/fail before dashboard.                          |                                    |
+| **Postmortem Generator**    | draft postmortem timeline, root cause, impact, one prevention suggestion, team format.                                    | Document understanding, Agent mode |
+| **Dashboard**               | live war room view: incident feed, real-time agent status visibly in parallel, root-cause report, fix status, postmortem. |                                    |
+
+## Non-functional
+
+* **Explainability:** every claim in root-cause report points to specific commit, file, or log line.
+* **Human-in-loop:** fix shown as suggestion, never auto-applied/deployed.
+* **Demo reliability:** pipeline rerun at least 3 times successfully before demo.
+* **Latency:** end-to-end within a few minutes.
+
+---
+
+# 6. System Flow
+
+```text
+Bug report/failing test/error log
+        ↓
+incident record
+        ↓
+Log Analyst + Code Historian in parallel
+        ↓
+combined findings
+        ↓
+Fix Writer
+        ↓
+proposed patch tested
+        ↓
+root-cause report + fix status + postmortem on dashboard
+        ↓
+human reviews/decides
+```
+
+---
+
+# 7. Demo Scenario & Acceptance Criteria
+
+* Sample repo with real Git history and 2–3 bugs planted at specific past commits.
+* Trigger one bug live must produce within demo window:
+
+  * correct suspect commit
+  * plain-language explanation
+  * tested patch
+  * draft postmortem
+* Dashboard must visibly show 3 subagents running at same time, not one after another; core parallel-task proof.
+* Closing metric on screen/narration e.g. target under 5 minutes.
+
+---
+
+# 8. Risks & Mitigations
+
+| Risk                         | Mitigation                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Subagents inconsistent/wrong | test 2–3 seeded bugs repeatedly; pick reliable live run, backups.                                                         |
+| Parallel orchestration hard  | build Log Analyst sequentially first, prove, then add Code Historian parallel; never block whole pipeline on parallelism. |
+| Live demo failure            | pre-record exact scenario.                                                                                                |
+| Scope creep                  | lock single sample repo/stack and don't revisit.                                                                          |
+
+---
+
+# 9. Judging Criteria Alignment
+
+* **Application of Technology:** agent mode, subagents, parallel tasks, document understanding for distinct necessary reasons.
+* **Business Value:** downtime cost and engineer time; postmortem-time metric.
+* **Presentation:** live simulated incident, little narration.
+* **Originality:** closes detection → cause → fix → documentation loop rather than stopping at code suggestions.
+
+```
+
+**Is version mein maine tumhari original PRD ki information ko intentionally preserve kiya hai; sirf GitHub par clean render hone ke liye Markdown styling ki hai.**
+```
