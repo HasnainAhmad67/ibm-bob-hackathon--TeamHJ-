@@ -21,7 +21,7 @@ from urllib.parse import urlencode
 try:
     import httpx
     from dotenv import load_dotenv
-    from fastapi import FastAPI, HTTPException, Request
+    from fastapi import Cookie, FastAPI, HTTPException, Request
     from fastapi.responses import HTMLResponse, RedirectResponse
     from itsdangerous import BadSignature, URLSafeTimedSerializer
 except ModuleNotFoundError as exc:  # usually the wrong Python, not a missing dep
@@ -49,14 +49,18 @@ def require(name: str) -> str:
             f"  2. open .env and paste your Google OAuth client id/secret into it\n"
             f"     (create one at https://console.cloud.google.com/apis/credentials)\n"
             f"  3. restart the server\n"
-            f"To just browse the app without real Google creds, run:\n"
-            f"  GOOGLE_CLIENT_ID=dummy GOOGLE_CLIENT_SECRET=dummy uvicorn main:app --reload\n"
+            f"Or skip Google entirely while building the UI:\n"
+            f"  echo 'DEV_LOGIN=true' >> .env\n"
         )
     return value
 
 
-GOOGLE_CLIENT_ID = require("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = require("GOOGLE_CLIENT_SECRET")
+# Fakes a signed-in user instead of calling Google. Handy for frontend work.
+DEV_LOGIN = os.getenv("DEV_LOGIN", "").lower() in {"1", "true", "yes"}
+SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-only-insecure-secret")
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "") or ("dev" if DEV_LOGIN else require("GOOGLE_CLIENT_ID"))
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "") or ("dev" if DEV_LOGIN else require("GOOGLE_CLIENT_SECRET"))
 # Must match exactly what you typed in the Google Cloud console.
 REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8000/auth/google/callback")
 
@@ -66,7 +70,8 @@ USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 SCOPES = "openid email profile"
 
 app = FastAPI(title="Google login example")
-state_signer = URLSafeTimedSerializer("change-me-to-a-random-string", salt="oauth-state")
+state_signer = URLSafeTimedSerializer(SESSION_SECRET, salt="oauth-state")
+session_signer = URLSafeTimedSerializer(SESSION_SECRET, salt="session")
 http = httpx.AsyncClient()
 
 
@@ -107,45 +112,65 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
     except BadSignature:
         raise HTTPException(status_code=400, detail="Invalid or expired state")
 
-    token_resp = await http.post(
-        TOKEN_URL,
-        data={
-            "code": code,
-            "client_id": GOOGLE_CLIENT_ID,
-            "client_secret": GOOGLE_CLIENT_SECRET,
-            "redirect_uri": REDIRECT_URI,
-            "grant_type": "authorization_code",
-        },
-    )
-    token_resp.raise_for_status()
-    tokens = token_resp.json()
+    if DEV_LOGIN:
+        # DEV_LOGIN=true short-circuits Google so the flow can be built without
+        # real OAuth credentials. Never enable this in production.
+        user = {
+            "sub": "dev-user-123",
+            "email": "dev@example.com",
+            "email_verified": True,
+            "name": "Dev User",
+            "picture": "",
+        }
+    else:
+        token_resp = await http.post(
+            TOKEN_URL,
+            data={
+                "code": code,
+                "client_id": GOOGLE_CLIENT_ID,
+                "client_secret": GOOGLE_CLIENT_SECRET,
+                "redirect_uri": REDIRECT_URI,
+                "grant_type": "authorization_code",
+            },
+        )
+        if token_resp.status_code != 200:
+            # Most common cause: client id/secret or redirect_uri mismatch in
+            # the Google Cloud console. Surface Google's message rather than a 500.
+            raise HTTPException(
+                status_code=400,
+                detail=f"Token exchange failed: {token_resp.json().get('error')} "
+                f"({token_resp.json().get('error_description', 'no description')})",
+            )
+        tokens = token_resp.json()
 
-    profile_resp = await http.get(
-        USERINFO_URL, headers={"Authorization": f"Bearer {tokens['access_token']}"}
-    )
-    profile_resp.raise_for_status()
-    user = profile_resp.json()
+        profile_resp = await http.get(
+            USERINFO_URL, headers={"Authorization": f"Bearer {tokens['access_token']}"}
+        )
+        profile_resp.raise_for_status()
+        user = profile_resp.json()
 
-    # In a real app: create/find the user in your DB and set a session cookie.
+    # Signed so the client cannot forge a profile. A real app would keep this
+    # server-side (or store only a session id) instead of in a cookie.
     response = RedirectResponse("/profile")
     response.set_cookie(
-        "access_token",
-        tokens["access_token"],
+        "session",
+        session_signer.dumps(user),
         httponly=True,
         samesite="lax",
+        max_age=86400,
         secure=False,  # set True when serving over HTTPS
     )
     return response
 
 
 @app.get("/profile")
-async def profile(access_token: str = "") -> dict:
-    if not access_token:
+async def profile(session: str | None = Cookie(default=None)) -> dict:
+    if not session:
         raise HTTPException(status_code=401, detail="Not signed in")
-    resp = await http.get(USERINFO_URL, headers={"Authorization": f"Bearer {access_token}"})
-    if resp.status_code != 200:
-        raise HTTPException(status_code=401, detail="Token expired, sign in again")
-    return resp.json()
+    try:
+        return session_signer.loads(session, max_age=86400)
+    except BadSignature:
+        raise HTTPException(status_code=401, detail="Session invalid or expired, sign in again")
 
 
 if __name__ == "__main__":
