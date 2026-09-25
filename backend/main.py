@@ -136,11 +136,18 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
         if token_resp.status_code != 200:
             # Most common cause: client id/secret or redirect_uri mismatch in
             # the Google Cloud console. Surface Google's message rather than a 500.
-            raise HTTPException(
-                status_code=400,
-                detail=f"Token exchange failed: {token_resp.json().get('error')} "
-                f"({token_resp.json().get('error_description', 'no description')})",
+            err = token_resp.json()
+            detail = (
+                f"Token exchange failed: {err.get('error')} "
+                f"({err.get('error_description', 'no description')})"
             )
+            if err.get("error") == "redirect_uri_mismatch":
+                detail += (
+                    f"\n\nThis app sent: {REDIRECT_URI}\n"
+                    f"Add that exact string to 'Authorized redirect URIs' on the OAuth "
+                    f"client in the Google Cloud console, then Save."
+                )
+            raise HTTPException(status_code=400, detail=detail)
         tokens = token_resp.json()
 
         profile_resp = await http.get(
@@ -177,4 +184,8 @@ if __name__ == "__main__":
     import uvicorn
 
     # Lets `python main.py` actually serve, instead of exiting after defining routes.
+    # flush=True keeps these ahead of uvicorn's logs when stdout is piped.
+    print(f"  Redirect URI (register exactly this in Google Cloud):\n    {REDIRECT_URI}", flush=True)
+    if DEV_LOGIN:
+        print("  DEV_LOGIN=true - faking sign-in, Google is not contacted.", flush=True)
     uvicorn.run(app, host="127.0.0.1", port=8000)
