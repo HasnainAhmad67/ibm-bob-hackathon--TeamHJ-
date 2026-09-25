@@ -139,7 +139,4 @@ human reviews/decides
 * **Presentation:** live simulated incident, little narration.
 * **Originality:** closes detection → cause → fix → documentation loop rather than stopping at code suggestions.
 
-```
 
-**Is version mein maine tumhari original PRD ki information ko intentionally preserve kiya hai; sirf GitHub par clean render hone ke liye Markdown styling ki hai.**
-```
