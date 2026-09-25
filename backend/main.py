@@ -7,22 +7,32 @@ Flow:
 
 Setup:
     python3 -m venv .venv
-    source .venv/bin/activate     # use the venv; system python lacks these deps
-    pip install -r requirements.txt
+    .venv/bin/pip install -r requirements.txt
     cp .env.example .env          # then fill in your Google OAuth client
-    uvicorn main:app --reload
+    .venv/bin/python main.py      # or: .venv/bin/uvicorn main:app --reload
     open http://localhost:8000
 """
 
 import os
+import sys
 from pathlib import Path
 from urllib.parse import urlencode
 
-import httpx
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from itsdangerous import BadSignature, URLSafeTimedSerializer
+try:
+    import httpx
+    from dotenv import load_dotenv
+    from fastapi import FastAPI, HTTPException, Request
+    from fastapi.responses import HTMLResponse, RedirectResponse
+    from itsdangerous import BadSignature, URLSafeTimedSerializer
+except ModuleNotFoundError as exc:  # usually the wrong Python, not a missing dep
+    raise SystemExit(
+        f"\nCannot import '{exc.name}' using {sys.executable}\n"
+        f"This almost always means you are running the system Python instead of the\n"
+        f"virtualenv. Run the app with the venv's interpreter directly:\n\n"
+        f"    .venv/bin/python main.py\n\n"
+        f"If that fails, install the dependencies into it:\n"
+        f"    .venv/bin/pip install -r requirements.txt\n"
+    ) from None
 
 # Look for .env next to this file, not the current working directory, so the app
 # boots the same way no matter which directory you run uvicorn from.
@@ -136,3 +146,10 @@ async def profile(access_token: str = "") -> dict:
     if resp.status_code != 200:
         raise HTTPException(status_code=401, detail="Token expired, sign in again")
     return resp.json()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # Lets `python main.py` actually serve, instead of exiting after defining routes.
+    uvicorn.run(app, host="127.0.0.1", port=8000)
