@@ -963,3 +963,487 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* ─── Form fields ──────────────────────────────────── */
+
+.ic-form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+}
+
+.ic-form-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 5px;
+}
+
+.ic-form-field--sm {
+  flex: 0 0 120px;
+}
+
+.ic-form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ic-form-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.ic-form-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.ic-form-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+
+.ic-form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+/* ─── Approval banner ──────────────────────────────── */
+
+.ic-approval-banner {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.ic-approval-banner-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.ic-approval-banner-body {
+  flex: 1;
+}
+
+.ic-approval-banner-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--red);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.ic-approval-banner-msg {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.ic-fix-verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-dim);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+
+.ic-approval-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* ─── Error banner ─────────────────────────────────── */
+
+.ic-error-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--red-dim);
+  border: 1px solid rgba(248, 81, 73, 0.35);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.ic-error-banner strong {
+  color: var(--red);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.ic-error-detail {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+/* ─── Log panel (collapsible) ──────────────────────── */
+
+.ic-log-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.ic-log-panel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+
+.ic-log-panel-toggle:hover {
+  background: var(--border-subtle);
+  color: var(--text);
+}
+
+.ic-log-panel-icon {
+  font-size: 9px;
+  flex-shrink: 0;
+}
+
+.ic-log-panel-pre {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--text);
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+/* ─── Dual validation panels ───────────────────────── */
+
+.ic-validation-summary {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--blue);
+}
+
+.ic-val-pass {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.ic-val-pass--fail {
+  border-color: rgba(248, 81, 73, 0.35);
+  background: rgba(248, 81, 73, 0.05);
+}
+
+.ic-val-pass--pass {
+  border-color: rgba(63, 185, 80, 0.35);
+  background: rgba(63, 185, 80, 0.05);
+}
+
+.ic-val-pass-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ic-val-exit-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.ic-val-duration {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+.ic-val-meta {
+  padding: 10px 14px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ic-val-meta .ic-meta-row {
+  font-size: 12px;
+}
+
+.ic-val-proposed-wrap {
+  margin-top: 8px;
+}
+
+.ic-val-patch-applied {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text);
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.ic-val-patch-applied strong {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.ic-val-patch-applied .ic-mono {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  word-break: break-all;
+}
+
+.ic-val-temp-info {
+  padding: 6px 14px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.ic-val-temp-info .ic-meta-row {
+  font-size: 12px;
+}
+
+.ic-val-skipped {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(227, 179, 65, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+/* ─── Findings errors ──────────────────────────────── */
+
+.ic-findings-errors {
+  font-size: 12px;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(227, 179, 65, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+
+.ic-findings-errors ul {
+  padding-left: 16px;
+  list-style: disc;
+  margin-top: 4px;
+}
+
+
+/* ─── Form field hints ─────────────────────────────────────────────── */
+
+.ic-form-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 4px;
+  display: block;
+}
+
+.ic-form-hint-warn {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+/* ─── Guidance panel ───────────────────────────────────────────────── */
+
+.ic-guide-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Intro row */
+.ic-guide-intro {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ic-guide-intro-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.ic-guide-intro-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Demo load button row */
+.ic-guide-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ic-btn-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(57, 208, 216, 0.35);
+  background: rgba(57, 208, 216, 0.08);
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.14s, border-color 0.14s;
+  white-space: nowrap;
+}
+
+.ic-btn-demo:hover {
+  background: rgba(57, 208, 216, 0.16);
+  border-color: var(--cyan);
+}
+
+.ic-btn-demo:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.ic-guide-demo-note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* "What happens next?" collapsible */
+.ic-guide-next {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+.ic-guide-next-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 0;
+  transition: color 0.13s;
+}
+
+.ic-guide-next-toggle:hover {
+  color: var(--blue);
+}
+
+.ic-guide-next-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.ic-guide-next-arrow {
+  font-size: 9px;
+  color: currentColor;
+}
+
+.ic-guide-next-list {
+  list-style: none;
+  margin: 10px 0 2px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ic-guide-next-item {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--border);
+  line-height: 1.4;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.ic-guide-next-item:hover {
+  border-color: var(--blue);
+  color: var(--text);
+}
+

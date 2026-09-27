@@ -1,0 +1,617 @@
+/* ===================================================================
+   TEAM HJ PAGE — TeamPage.css
+   All styles are scoped to .tm-* to avoid collisions with App.css
+   =================================================================== */
+
+/* ── Page shell ───────────────────────────────────────────────────── */
+
+.tm-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+/* ── Back nav bar ─────────────────────────────────────────────────── */
+
+.tm-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.tm-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+
+.tm-back-btn:hover {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+  transform: translateX(-2px);
+}
+
+.tm-back-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+
+.tm-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px 64px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Radial glow orbs — CSS only, no images */
+.tm-hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.28;
+}
+
+.tm-hero-glow--1 {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.6) 0%, transparent 70%);
+  top: -120px;
+  left: 50%;
+  transform: translateX(-60%);
+}
+
+.tm-hero-glow--2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(188, 140, 255, 0.5) 0%, transparent 70%);
+  bottom: -80px;
+  right: 5%;
+}
+
+.tm-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.tm-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  opacity: 0.9;
+}
+
+.tm-hero-heading {
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  /* Gradient text */
+  background: linear-gradient(135deg, #f0f6fc 30%, #58a6ff 60%, #bc8cff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.tm-hero-sub {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 16px;
+}
+
+.tm-hero-statement {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ── Main content ─────────────────────────────────────────────────── */
+
+.tm-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.tm-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tm-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Team Lead card ───────────────────────────────────────────────── */
+
+.tm-lead-card {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  background: linear-gradient(145deg, #1a2336 0%, #161b22 50%, #1a1f2e 100%);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:
+    0 0 0 1px rgba(88, 166, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  /* Subtle 3D perspective tilt on hover via CSS transform */
+  transform-style: preserve-3d;
+}
+
+.tm-lead-card:hover {
+  transform: translateY(-6px) perspective(800px) rotateX(1deg);
+  box-shadow:
+    0 0 0 1px rgba(88, 166, 255, 0.22),
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(88, 166, 255, 0.08);
+}
+
+/* Glow overlay */
+.tm-lead-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 20% 0%, rgba(88, 166, 255, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tm-lead-inner {
+  position: relative;
+  z-index: 1;
+  padding: 32px 36px;
+}
+
+.tm-lead-top {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.tm-lead-identity {
+  flex: 1;
+  min-width: 200px;
+}
+
+.tm-lead-badge-row {
+  margin-bottom: 8px;
+}
+
+.tm-lead-name {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-heading);
+  margin-bottom: 4px;
+}
+
+.tm-lead-title {
+  font-size: 14px;
+  color: var(--blue);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.tm-lead-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* ── Regular member cards ─────────────────────────────────────────── */
+
+.tm-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.tm-member-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(160deg, #1c2230 0%, #161b22 100%);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* Subtle glass shimmer on top edge */
+.tm-member-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 10%, rgba(255, 255, 255, 0.07) 50%, transparent 90%);
+}
+
+.tm-member-card:hover {
+  transform: translateY(-4px) perspective(600px) rotateX(0.8deg);
+  border-color: rgba(88, 166, 255, 0.3);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.45),
+    0 0 24px rgba(88, 166, 255, 0.06);
+}
+
+.tm-member-top {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.tm-member-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.tm-member-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-member-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.tm-member-desc {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.65;
+  flex: 1;
+}
+
+/* ── Avatars ──────────────────────────────────────────────────────── */
+
+.tm-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border: 2px solid transparent;
+  /* 3D depth: inner shadow + glow border */
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.tm-avatar--large {
+  width: 76px;
+  height: 76px;
+  font-size: 22px;
+  border-width: 2px;
+}
+
+.tm-avatar--lead {
+  background: linear-gradient(135deg, #1a3a5c 0%, #0f2440 100%);
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.4),
+    0 0 14px rgba(88, 166, 255, 0.35),
+    0 3px 10px rgba(0,0,0,0.5);
+}
+
+.tm-avatar--blue {
+  background: linear-gradient(135deg, #1d2d50 0%, #0f1f3d 100%);
+  border-color: rgba(88, 166, 255, 0.5);
+  color: var(--blue);
+}
+
+.tm-avatar--purple {
+  background: linear-gradient(135deg, #2a1f40 0%, #1a1230 100%);
+  border-color: rgba(188, 140, 255, 0.5);
+  color: var(--purple);
+}
+
+.tm-avatar--cyan {
+  background: linear-gradient(135deg, #0f2a2d 0%, #0a1e21 100%);
+  border-color: rgba(57, 208, 216, 0.4);
+  color: var(--cyan);
+}
+
+/* ── Role badge ───────────────────────────────────────────────────── */
+
+.tm-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.tm-role-badge--lead {
+  background: linear-gradient(90deg, rgba(88, 166, 255, 0.2), rgba(188, 140, 255, 0.15));
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  color: var(--blue);
+}
+
+/* ── LinkedIn button ──────────────────────────────────────────────── */
+
+.tm-linkedin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  background: var(--blue-dim);
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+  width: fit-content;
+}
+
+.tm-linkedin-btn:hover {
+  background: rgba(88, 166, 255, 0.22);
+  border-color: var(--blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+}
+
+.tm-linkedin-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ── Contribution tags ────────────────────────────────────────────── */
+
+.tm-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tm-tags--sm .tm-tag {
+  font-size: 10.5px;
+  padding: 2px 8px;
+}
+
+.tm-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11.5px;
+  font-weight: 500;
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.18);
+  color: var(--text-muted);
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.tm-tag:hover {
+  background: var(--blue-dim);
+  border-color: rgba(88, 166, 255, 0.35);
+  color: var(--blue);
+}
+
+/* ── Pipeline "How we built it" strip ────────────────────────────── */
+
+.tm-pipeline {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #161b22 0%, #1a2030 100%);
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tm-pipeline::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), var(--purple), transparent);
+  opacity: 0.6;
+}
+
+.tm-section-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tm-section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.tm-pipeline-steps {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  row-gap: 14px;
+}
+
+.tm-pipeline-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tm-pipeline-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.tm-pipeline-step:hover .tm-pipeline-node {
+  border-color: var(--blue);
+  background: var(--blue-dim);
+  transform: scale(1.1);
+}
+
+.tm-pipeline-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.tm-pipeline-arrow {
+  font-size: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+
+.tm-footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-lead-card,
+  .tm-member-card,
+  .tm-back-btn,
+  .tm-linkedin-btn,
+  .tm-tag,
+  .tm-pipeline-node {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .tm-lead-card:hover,
+  .tm-member-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  .tm-hero {
+    padding: 48px 16px 40px;
+  }
+
+  .tm-main {
+    padding: 32px 16px 48px;
+    gap: 36px;
+  }
+
+  .tm-lead-inner {
+    padding: 22px 20px;
+  }
+
+  .tm-lead-top {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .tm-lead-identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tm-lead-name {
+    font-size: 22px;
+  }
+
+  .tm-members-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-pipeline {
+    padding: 22px 18px;
+  }
+
+  .tm-pipeline-steps {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tm-pipeline-arrow {
+    transform: rotate(90deg);
+    padding: 0;
+  }
+}

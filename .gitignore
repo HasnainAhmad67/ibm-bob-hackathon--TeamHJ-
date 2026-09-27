@@ -1,0 +1,13 @@
+
+# Ignore local logs, generated reports, dependencies, and secrets
+*.log
+*.err
+2incident-commander-dual-validation-enhancement-summary.html
+incident-commander-backend-implementation-summary.html
+backend/.venv/
+frontend/node_modules/
+frontend/dist/
+.env
+.env.*
+__pycache__/
+.pytest_cache/
