@@ -1,0 +1,6 @@
+{
+  "failing_function": "order_total",
+  "file": "sample-app/app/orders.py",
+  "symptom": "The discount is added to the subtotal instead of subtracted. For a $110 subtotal with a 10% discount the function returns 110 + 11 = 121.0 instead of the expected 110 - 11 = 99.0.",
+  "failing_test": "tests/test_orders.py::test_ten_percent_discount"
+}

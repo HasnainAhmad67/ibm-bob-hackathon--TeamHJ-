@@ -1,0 +1,6 @@
+{
+  "suspect_commit": "7997883eacdc05a2e8a0f58290d0c9ee67b77749",
+  "commit_message": "fix: apply promotional discount to order total",
+  "explanation": "This commit introduced the discount feature into order_total. It correctly computes the discount amount (e.g. 10% of $110 = $11.00), but the final return expression uses `base + discount` instead of `base - discount`. This means the discount is added to the subtotal rather than deducted, producing $121.00 instead of the correct $99.00. The inline comment in the committed code even acknowledges the mistake: '# Regression: discount is added instead of subtracted.'",
+  "file": "sample-app/app/orders.py"
+}

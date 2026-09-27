@@ -1,0 +1,5 @@
+{
+  "patch_description": "Changed `base + discount` to `base - discount` on the final return line of order_total in sample-app/app/orders.py, so the discount is correctly subtracted from the subtotal instead of added to it. Also removed the stale regression comment on the preceding line.",
+  "file_changed": "sample-app/app/orders.py",
+  "confidence": "high"
+}
